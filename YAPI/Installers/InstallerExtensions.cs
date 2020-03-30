@@ -16,7 +16,7 @@ namespace YAPI.Installers
                   typeof(IInstaller).IsAssignableFrom(x) && !x.IsAbstract && !x.IsAbstract).Select(Activator.CreateInstance).Cast<IInstaller>().ToList();
 
             //here we have installing all our services using installer classes installService method / this one also is noice
-            installers.ForEach(installer => installer.InstallServices(services, Configuration));
+            installers.ForEach(installer => installer.InstallServices(services, configuration));
         }
     }
 }
