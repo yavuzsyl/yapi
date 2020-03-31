@@ -1,57 +1,59 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using YAPI.Data;
 using YAPI.Domain;
 
 namespace YAPI.Services
 {
     public class PostService : IPostService
     {
-        private List<Post> posts;
+        private readonly DataContext dataContext;
 
-        public PostService()
+        public PostService(DataContext dataContext)
         {
-            posts = new List<Post>();
-            for (int i = 0; i < 5; i++)
-            {
-                posts.Add(new Post
-                {
-                    Id = Guid.NewGuid(),
-                    Name = $"Post Name{i}"
-                });
-            }
+            this.dataContext = dataContext;
         }
 
-        public bool DeletePost(Guid id)
+        public async Task<bool> DeletePostAsync(Guid id)
         {
-            var post = GetPostById(id);
+            var post = await GetPostByIdAsync(id);
             if (post == null)
                 return false;
 
-            posts.Remove(post);
-            return true;
+            dataContext.Posts.Remove(post);
+            var isDeleted = await dataContext.SaveChangesAsync() > 0;
+            return isDeleted;
         }
 
-        public Post GetPostById(Guid id)
+        public async Task<Post> GetPostByIdAsync(Guid id)
         {
-            return posts.SingleOrDefault(x => x.Id == id);
+            return await dataContext.Posts.SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public List<Post> GetPosts()
+        public async Task<List<Post>> GetPostsAsync()
         {
-            return posts;
+            return await dataContext.Posts.ToListAsync();
         }
 
-        public bool UpdatePost(Post postToUpdate)
+        public async Task<bool> UpdatePostAsync(Post postToUpdate)
         {
-            var exists = GetPostById(postToUpdate.Id) != null;
-            if (!exists)
+            var post = await GetPostByIdAsync(postToUpdate.Id);
+            if (post == null)
                 return false;
+            post.Name = postToUpdate.Name;
+            dataContext.Posts.Update(post);
+            var isUpdated = await dataContext.SaveChangesAsync() > 0;
+            return isUpdated;
+        }
 
-            var index = posts.FindIndex(x => x.Id == postToUpdate.Id);
-            posts[index] = postToUpdate;
-            return true;
+        public async Task<bool> CreatePostAsync(Post post)
+        {
+            await dataContext.Posts.AddAsync(post);
+            var isCraeted = await dataContext.SaveChangesAsync() > 0;
+            return isCraeted;
         }
     }
 }

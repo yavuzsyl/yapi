@@ -20,7 +20,8 @@ namespace YAPI.Installers
                  configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<DataContext>();
-            services.AddSingleton<IPostService, PostService>();
+
+            services.AddScoped<IPostService, PostService>();
         }
     }
 }

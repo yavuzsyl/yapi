@@ -21,15 +21,15 @@ namespace YAPI.Controllers.V1
 
 
         [HttpGet(ApiRoutes.Posts.GetAll)]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            return Ok(postService.GetPosts());
+            return Ok(await postService.GetPostsAsync());
         }
 
         [HttpGet(ApiRoutes.Posts.Get)]
-        public IActionResult Get([FromRoute]Guid postId)
+        public async Task<IActionResult> GetAsync([FromRoute]Guid postId)
         {
-            var post = postService.GetPostById(postId);
+            var post = await postService.GetPostByIdAsync(postId);
             if (post == null)
                 return NotFound();
             return Ok(post);
@@ -37,14 +37,11 @@ namespace YAPI.Controllers.V1
 
 
         [HttpPost(ApiRoutes.Posts.Create)]
-        public IActionResult Create([FromBody] CreatePostRequest postRequest)
+        public async Task<IActionResult> CreateAsync([FromBody] CreatePostRequest postRequest)
         {
-            var post = new Post() { Id = postRequest.Id };
+            var post = new Post() { Name = postRequest.Name };
 
-            if (post.Id != Guid.Empty)
-                post.Id = Guid.NewGuid();
-
-            postService.GetPosts().Add(post);
+            var result = await postService.CreatePostAsync(post);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var location = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", post.Id.ToString());
@@ -54,14 +51,14 @@ namespace YAPI.Controllers.V1
         }
 
         [HttpPut(ApiRoutes.Posts.Update)]
-        public IActionResult Update([FromRoute]Guid postId, [FromBody]UpdatePostRequest request)
+        public async Task<IActionResult> UpdateAsync([FromRoute]Guid postId, [FromBody]UpdatePostRequest request)
         {
             var post = new Post()
             {
                 Id = postId,
                 Name = request.Name
             };
-            var isUpdated = postService.UpdatePost(post);
+            var isUpdated = await postService.UpdatePostAsync(post);
 
             if (isUpdated)
                 return Ok(post);
@@ -70,9 +67,9 @@ namespace YAPI.Controllers.V1
         }
 
         [HttpDelete(ApiRoutes.Posts.Delete)]
-        public IActionResult Delete ([FromRoute]Guid postId)
+        public async Task<IActionResult> DeleteAsync([FromRoute]Guid postId)
         {
-            var isDeleted = postService.DeletePost(postId);
+            var isDeleted = await postService.DeletePostAsync(postId);
             if (isDeleted)
                 return NoContent();
 
