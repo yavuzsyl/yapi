@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using YAPI.Data;
+using YAPI.Services;
 
 namespace YAPI.Installers
 {
@@ -19,7 +20,7 @@ namespace YAPI.Installers
                  configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<DataContext>();
-
+            services.AddSingleton<IPostService, PostService>();
         }
     }
 }
