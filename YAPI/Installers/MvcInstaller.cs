@@ -11,7 +11,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YAPI.Domain;
 using YAPI.Options;
+using YAPI.Services;
 
 namespace YAPI.Installers
 {
@@ -22,6 +24,12 @@ namespace YAPI.Installers
             var jwtSettings = new JwtSettings();
             configuration.Bind(key: nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
+
+            services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+
+            services.AddScoped<IIdentityService, IdentityService>();
+
+
 
 
             services.AddAuthentication(configureOptions: x =>
