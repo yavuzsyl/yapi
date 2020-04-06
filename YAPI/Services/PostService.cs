@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using YAPI.Contracts.Requests;
 using YAPI.Data;
 using YAPI.Domain;
 
@@ -38,9 +39,9 @@ namespace YAPI.Services
             return await dataContext.Posts.ToListAsync();
         }
 
-        public async Task<bool> UpdatePostAsync(Post postToUpdate)
+        public async Task<bool> UpdatePostAsync(UpdatePostRequest postToUpdate,Guid postId)
         {
-            var post = await GetPostByIdAsync(postToUpdate.Id);
+            var post = await GetPostByIdAsync(postId);
             if (post == null)
                 return false;
             post.Name = postToUpdate.Name;
@@ -54,6 +55,17 @@ namespace YAPI.Services
             await dataContext.Posts.AddAsync(post);
             var isCraeted = await dataContext.SaveChangesAsync() > 0;
             return isCraeted;
+        }
+
+        public async Task<bool> UserOwnsPostAsync(Guid postId, string userId)
+        {
+            //to prevent exception beacause context will be tracking entities
+            var post = await dataContext.Posts.AsNoTracking().SingleOrDefaultAsync(x => x.Id == postId);
+            if (post == null || post.AppUserId != userId)
+                return false;
+
+            return true;
+
         }
     }
 }

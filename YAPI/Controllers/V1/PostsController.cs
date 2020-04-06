@@ -9,6 +9,7 @@ using YAPI.Contracts.Requests;
 using YAPI.Contracts.Responses;
 using YAPI.Contracts.V1;
 using YAPI.Domain;
+using YAPI.Extensions.AuthExtensions;
 using YAPI.Services;
 
 namespace YAPI.Controllers.V1
@@ -43,7 +44,12 @@ namespace YAPI.Controllers.V1
         [HttpPost(ApiRoutes.Posts.Create)]
         public async Task<IActionResult> CreateAsync([FromBody] CreatePostRequest postRequest)
         {
-            var post = new Post() { Name = postRequest.Name };
+            var post = new Post()
+            {
+                Name = postRequest.Name,
+                AppUserId = HttpContext.GetUserId()
+                
+            };
 
             var result = await postService.CreatePostAsync(post);
 
@@ -57,15 +63,15 @@ namespace YAPI.Controllers.V1
         [HttpPut(ApiRoutes.Posts.Update)]
         public async Task<IActionResult> UpdateAsync([FromRoute]Guid postId, [FromBody]UpdatePostRequest request)
         {
-            var post = new Post()
-            {
-                Id = postId,
-                Name = request.Name
-            };
-            var isUpdated = await postService.UpdatePostAsync(post);
+            var userOwnsPost = await postService.UserOwnsPostAsync(postId, HttpContext.GetUserId());
+
+            if (!userOwnsPost)
+                return BadRequest(new { Error = "User has not permission to edit this post" });
+
+            var isUpdated = await postService.UpdatePostAsync(request, postId);
 
             if (isUpdated)
-                return Ok(post);
+                return Ok(request);
 
             return NotFound();
         }
@@ -73,6 +79,10 @@ namespace YAPI.Controllers.V1
         [HttpDelete(ApiRoutes.Posts.Delete)]
         public async Task<IActionResult> DeleteAsync([FromRoute]Guid postId)
         {
+            var userOwnsPost = await postService.UserOwnsPostAsync(postId, HttpContext.GetUserId());
+            if (!userOwnsPost)
+                return BadRequest(new { Error = "User has not permission to edit this post" });
+
             var isDeleted = await postService.DeletePostAsync(postId);
             if (isDeleted)
                 return NoContent();

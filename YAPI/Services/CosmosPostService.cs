@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using YAPI.Contracts.Requests;
 using YAPI.Domain;
 
 namespace YAPI.Services
@@ -66,6 +67,16 @@ namespace YAPI.Services
             var response = await cosmosStore.UpdateAsync(cosmposPost);
 
             return response.IsSuccess;
+        }
+
+        public Task<bool> UpdatePostAsync(UpdatePostRequest postToUpdate, Guid postId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UserOwnsPostAsync(Guid postId, string userId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
