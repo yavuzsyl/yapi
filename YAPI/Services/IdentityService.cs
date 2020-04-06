@@ -25,6 +25,20 @@ namespace YAPI.Services
             this.userManager = userManager;
             this.options = options.Value;
         }
+
+        public async Task<AuthenticationResult> LoginAsync(string email, string password)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null)
+                return new AuthenticationResult { ErrorMessage = new[] { "user doesnt exist" } };
+
+            var userHasValidPassword = await userManager.CheckPasswordAsync(user, password);
+            if (!userHasValidPassword)
+                return new AuthenticationResult { ErrorMessage = new[] { "password is invalid" } };
+
+            return GetAuthenticationResult(user);
+        }
+
         public async Task<AuthenticationResult> RegisterAsync(string email, string password)
         {
             var existingUser = await userManager.FindByEmailAsync(email);
@@ -37,11 +51,16 @@ namespace YAPI.Services
                 UserName = email
             };
 
-            var createdUser = await userManager.CreateAsync(newUser,password);//gonaa hash this pass mofo
+            var createdUser = await userManager.CreateAsync(newUser, password);//gonaa hash this pass mofo
             if (!createdUser.Succeeded)
                 return new AuthenticationResult { ErrorMessage = createdUser.Errors.Select(x => x.Description) };
 
             //token
+            return GetAuthenticationResult(newUser);
+        }
+
+        private AuthenticationResult GetAuthenticationResult(AppUser newUser)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityKey = Encoding.UTF8.GetBytes(options.SecretKey);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -54,7 +73,7 @@ namespace YAPI.Services
                     new Claim(type:JwtRegisteredClaimNames.Jti, value : Guid.NewGuid().ToString()),
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(securityKey),algorithm: SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(securityKey), algorithm: SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -63,7 +82,7 @@ namespace YAPI.Services
                 Token = tokenHandler.WriteToken(token),
                 Success = true,
                 ErrorMessage = null
-                
+
             };
         }
     }

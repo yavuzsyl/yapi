@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using YAPI.Contracts.Requests;
 using YAPI.Contracts.Responses;
 using YAPI.Contracts.V1;
+using YAPI.Domain;
 using YAPI.Services;
 
 namespace YAPI.Controllers.V1
@@ -22,13 +23,29 @@ namespace YAPI.Controllers.V1
         }
 
         [HttpPost(ApiRoutes.Identity.Register)]
-        public async Task<IActionResult> Register([FromBody]RegistrationRequest model)
+        public async Task<IActionResult> Register([FromBody]RegistrationRequest request)
         {
-            var authResponse = await identityService.RegisterAsync(model.Email, model.Password);
-            if (!authResponse.Success)
-                return BadRequest(authResponse);
+            if (!ModelState.IsValid)
+                return BadRequest(new AuthenticationResult() { ErrorMessage = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
 
-            return Ok(authResponse);
+            var registrationResponse = await identityService.RegisterAsync(request.Email, request.Password);
+            if (!registrationResponse.Success)
+                return BadRequest(registrationResponse);
+
+            return Ok(registrationResponse);
+        }
+
+        [HttpPost(ApiRoutes.Identity.Login)]
+        public async Task<IActionResult> Login([FromBody]LoginRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new AuthenticationResult() { ErrorMessage = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
+
+            var loginResponse = await identityService.LoginAsync(request.Email, request.Password);
+            if (!loginResponse.Success)
+                return BadRequest(loginResponse);
+
+            return Ok(loginResponse);
         }
     }
 }
