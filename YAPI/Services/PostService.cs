@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using YAPI.Contracts.Requests;
+using YAPI.Contracts.V1.Requests;
 using YAPI.Data;
 using YAPI.Domain;
 

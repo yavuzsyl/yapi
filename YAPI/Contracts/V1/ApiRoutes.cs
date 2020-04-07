@@ -23,6 +23,7 @@ namespace YAPI.Contracts.V1
         {
             public const string Login = Base + "/identity/login";
             public const string Register = Base + "/identity/register";
+            public const string Refresh = Base + "/identity/refresh";
 
         }
     }

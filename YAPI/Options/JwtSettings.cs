@@ -8,5 +8,6 @@ namespace YAPI.Options
     public class JwtSettings
     {
         public string SecretKey { get; set; }
+        public TimeSpan TokenLifeTime { get; set; }
     }
 }

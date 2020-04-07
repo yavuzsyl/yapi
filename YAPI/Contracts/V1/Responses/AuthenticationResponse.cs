@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace YAPI.Domain
+namespace YAPI.Contracts.V1.Responses
 {
-    public class AuthenticationResult
+    public class AuthenticationResponse
     {
         public string Token { get; set; }
         public string RefreshToken { get; set; }
-        public bool Success { get; set; }
-        public IEnumerable<string>  ErrorMessage { get; set; }
+
     }
 }

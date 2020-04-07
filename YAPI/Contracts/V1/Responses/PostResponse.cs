@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace YAPI.Contracts.Requests
+namespace YAPI.Contracts.V1.Responses
 {
-    public class CreatePostRequest
+    public class PostResponse
     {
-        public string Name { get; set; }
+        public Guid Id { get; set; }
     }
 }

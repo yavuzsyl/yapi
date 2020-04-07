@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using YAPI.Contracts.Requests;
-using YAPI.Contracts.Responses;
+
 using YAPI.Contracts.V1;
+using YAPI.Contracts.V1.Requests;
 using YAPI.Domain;
 using YAPI.Services;
 
@@ -46,6 +46,17 @@ namespace YAPI.Controllers.V1
                 return BadRequest(loginResponse);
 
             return Ok(loginResponse);
+        }
+
+        //the client needs to store the expiry date in the local storage and on every request you need to check if it’s in the past. If it is then you use a middleware to call the refresh endpoint and get a new set of keys.
+        [HttpPost(ApiRoutes.Identity.Refresh)]
+        public async Task<IActionResult> Refresh(RefreshTokenRequest request)
+        {
+            var refreshResponse = await identityService.RefreshTokenAsync(request.Token,request.RefreshToken);
+            if (!refreshResponse.Success)
+                return BadRequest(refreshResponse);
+
+            return Ok(refreshResponse);
         }
     }
 }
