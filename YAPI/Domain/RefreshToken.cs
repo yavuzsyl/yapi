@@ -10,6 +10,7 @@ namespace YAPI.Domain
     public class RefreshToken
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Token { get; set; }
         public string JwtId { get; set; }//validates Token is belongs to this JwtId
         public DateTime CreationDate { get; set; }

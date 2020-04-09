@@ -1,5 +1,4 @@
 ﻿using Cosmonaut;
-using Cosmonaut.Extensions.Microsoft.DependencyInjection;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +20,7 @@ namespace YAPI.Installers
                authKey: configuration["CosmosSettings:AccountKey"],
                 new ConnectionPolicy { ConnectionMode = ConnectionMode.Direct, ConnectionProtocol = Protocol.Tcp });
 
-            services.AddCosmosStore<CosmosPostDto>(cosmosStoreSettings);
+            //services.AddCosmosStore<CosmosPostDto>(cosmosStoreSettings);will fix later
         }
     }
 }

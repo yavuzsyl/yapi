@@ -16,9 +16,10 @@ using YAPI.Domain;
 
 namespace YAPI.IntegrationTest
 {
-    public class IntegrationTest
+    public class IntegrationTest : IDisposable
     {
         protected readonly HttpClient testClient;
+        private readonly IServiceProvider serviceProvider;
 
         public IntegrationTest()
         {
@@ -35,6 +36,7 @@ namespace YAPI.IntegrationTest
                         });
                     });
                 });
+            serviceProvider = appFactory.Services;
             testClient = appFactory.CreateClient();
         }
 
@@ -58,6 +60,16 @@ namespace YAPI.IntegrationTest
         {
             var response = await testClient.PostAsJsonAsync(ApiRoutes.Posts.Create, createPostRequest);
             return (await response.Content.ReadAsAsync<PostResponse>());
+        }
+
+        /// <summary>
+        /// create scope level service : at every request new datacontext and deletes that in memory database at every request this is some next level shit for me xD
+        /// </summary>
+        public void Dispose()
+        {
+            using var serviceScope = serviceProvider.CreateScope();
+            var context = serviceScope.ServiceProvider.GetService<DataContext>();
+            context.Database.EnsureDeleted();
         }
     }
 }

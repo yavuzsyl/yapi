@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAPI", "YAPI\YAPI.csproj", 
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B1C3E644-23DE-4A83-A056-C91E621C3D05}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAPI.IntegrationTest", "..\YAPI.IntegrationTest\YAPI.IntegrationTest.csproj", "{C0F95277-8CCC-4DDC-A11F-BC3604C5793B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAPI.IntegrationTest", "YAPI.IntegrationTest\YAPI.IntegrationTest.csproj", "{33898B25-C857-4817-B8CE-2FFE4628B096}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{B1C3E644-23DE-4A83-A056-C91E621C3D05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1C3E644-23DE-4A83-A056-C91E621C3D05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1C3E644-23DE-4A83-A056-C91E621C3D05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C0F95277-8CCC-4DDC-A11F-BC3604C5793B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0F95277-8CCC-4DDC-A11F-BC3604C5793B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C0F95277-8CCC-4DDC-A11F-BC3604C5793B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C0F95277-8CCC-4DDC-A11F-BC3604C5793B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33898B25-C857-4817-B8CE-2FFE4628B096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33898B25-C857-4817-B8CE-2FFE4628B096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33898B25-C857-4817-B8CE-2FFE4628B096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33898B25-C857-4817-B8CE-2FFE4628B096}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
