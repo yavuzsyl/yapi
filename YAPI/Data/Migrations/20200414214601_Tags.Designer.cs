@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YAPI.Data;
 
 namespace YAPI.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200414214601_Tags")]
+    partial class Tags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,19 +240,6 @@ namespace YAPI.Data.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("YAPI.Domain.PostTag", b =>
-                {
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TagName")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("PostId", "TagName");
-
-                    b.ToTable("PostTags");
-                });
-
             modelBuilder.Entity("YAPI.Domain.RefreshToken", b =>
                 {
                     b.Property<string>("Token")
@@ -356,15 +345,6 @@ namespace YAPI.Data.Migrations
                     b.HasOne("YAPI.Domain.AppUser", "AppUser")
                         .WithMany()
                         .HasForeignKey("AppUserId");
-                });
-
-            modelBuilder.Entity("YAPI.Domain.PostTag", b =>
-                {
-                    b.HasOne("YAPI.Domain.Post", "Post")
-                        .WithMany("Tags")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("YAPI.Domain.RefreshToken", b =>

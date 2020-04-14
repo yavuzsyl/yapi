@@ -56,6 +56,8 @@ namespace YAPI.Installers
 
             });
 
+            services.AddAuthorization();
+
             services.AddMvc(options=> { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSwaggerGen(s =>

@@ -31,19 +31,23 @@ namespace YAPI.Services
 
         public async Task<Post> GetPostByIdAsync(Guid id)
         {
-            return await dataContext.Posts.SingleOrDefaultAsync(x => x.Id == id);
+            return await dataContext
+                .Posts
+                .Include(x => x.Tags)
+                .SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Post>> GetPostsAsync()
         {
-            return await dataContext.Posts.ToListAsync();
+            return await dataContext.Posts.Include(x => x.Tags).ToListAsync();
         }
 
-        public async Task<bool> UpdatePostAsync(UpdatePostRequest postToUpdate,Guid postId)
+        public async Task<bool> UpdatePostAsync(UpdatePostRequest postToUpdate, Guid postId)
         {
             var post = await GetPostByIdAsync(postId);
             if (post == null)
                 return false;
+
             post.Name = postToUpdate.Name;
             dataContext.Posts.Update(post);
             var isUpdated = await dataContext.SaveChangesAsync() > 0;
@@ -52,6 +56,9 @@ namespace YAPI.Services
 
         public async Task<bool> CreatePostAsync(Post post)
         {
+            post.Tags?.ForEach(x => x.TagName = x.TagName.ToLower());
+
+            await AddNewTags(post);
             await dataContext.Posts.AddAsync(post);
             var isCraeted = await dataContext.SaveChangesAsync() > 0;
             return isCraeted;
@@ -66,6 +73,27 @@ namespace YAPI.Services
 
             return true;
 
+        }
+
+        public async Task<List<Tag>> GetAllTagsAsync()
+        {
+            return await dataContext.Tags.ToListAsync();
+        }
+
+        private async Task AddNewTags(Post post)
+        {
+            foreach (var tag in post.Tags)
+            {
+                var existingTag =
+                    await dataContext.Tags.SingleOrDefaultAsync(x =>
+                        x.Name == tag.TagName);
+                if (existingTag != null)
+                    continue;
+
+                await dataContext.Tags.AddAsync(new Tag
+                { Name = tag.TagName, CreatedOn = DateTime.UtcNow, CreatorId = post.AppUserId });
+
+            }
         }
     }
 }

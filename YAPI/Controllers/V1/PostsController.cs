@@ -44,19 +44,29 @@ namespace YAPI.Controllers.V1
         [HttpPost(ApiRoutes.Posts.Create)]
         public async Task<IActionResult> CreateAsync([FromBody] CreatePostRequest postRequest)
         {
+            var postId = Guid.NewGuid();
             var post = new Post()
             {
+                Id = postId,
                 Name = postRequest.Name,
-                AppUserId = HttpContext.GetUserId()
-                
+                AppUserId = HttpContext.GetUserId(),
+                Tags = postRequest.Tags.Select(x => new PostTag { PostId = postId, TagName = x }).ToList()
+
             };
 
             var result = await postService.CreatePostAsync(post);
+            if (!result)
+                return BadRequest();
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var location = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", post.Id.ToString());
 
-            var response = new PostResponse() { Id = post.Id };
+            var response = new PostResponse() { 
+                Id = post.Id,
+                Name = postRequest.Name,
+                AppUserId = HttpContext.GetUserId(),
+                Tags = postRequest.Tags.Select(x => new PostTag { PostId = postId, TagName = x }).ToList()
+            };
             return Created(location, response);
         }
 

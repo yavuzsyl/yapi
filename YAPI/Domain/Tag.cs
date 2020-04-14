@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace YAPI.Domain
 {
-    public class Post
+    public class Tag
     {
         [Key]
-        public Guid Id { get; set; }
         public string Name { get; set; }
 
-        public string AppUserId { get; set; }
-        [ForeignKey(nameof(AppUserId))]
-        public AppUser AppUser { get; set; }
+        public string CreatorId { get; set; }
 
-        public virtual List<PostTag> Tags { get; set; }
+        [ForeignKey(nameof(CreatorId))]
+        public AppUser CreatedBy { get; set; }
+
+        public DateTime CreatedOn { get; set; }
     }
 }

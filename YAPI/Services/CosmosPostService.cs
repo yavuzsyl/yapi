@@ -37,6 +37,11 @@ namespace YAPI.Services
             return response.IsSuccess;
         }
 
+        public Task<List<Tag>> GetAllTagsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Post> GetPostByIdAsync(Guid id)
         {
             var post = await cosmosStore.FindAsync(id.ToString());
