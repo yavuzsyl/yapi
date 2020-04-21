@@ -56,9 +56,13 @@ namespace YAPI.Installers
 
             });
 
-            services.AddAuthorization();
+            //policy combintaion of the rules accessing something in the system
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy(name: "TagViewer", configurePolicy: builder => builder.RequireClaim("tags.view", allowedValues: "true"));
+            //});gonna use roles instead of claim
 
-            services.AddMvc(options=> { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc(options => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSwaggerGen(s =>
             {

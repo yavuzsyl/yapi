@@ -4,9 +4,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using YAPI.Data;
@@ -19,19 +21,21 @@ namespace YAPI.Services
     {
         private readonly SignInManager<AppUser> signInManager;
         private readonly UserManager<AppUser> userManager;
+        private readonly RoleManager<AppUser> roleManager;
         private readonly JwtSettings options;
         private readonly TokenValidationParameters tokenValidationParameters;
         private readonly DataContext dataContext;
 
-        public IdentityService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IOptions<JwtSettings> options, TokenValidationParameters tokenValidationParameters, DataContext dataContext)
+        public IdentityService(UserManager<AppUser> userManager, RoleManager<AppUser> roleManager, SignInManager<AppUser> signInManager, IOptions<JwtSettings> options, TokenValidationParameters tokenValidationParameters, DataContext dataContext)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.roleManager = roleManager;
             this.options = options.Value;
             this.tokenValidationParameters = tokenValidationParameters;
             this.dataContext = dataContext;
         }
-
+        //public static int counter = 0; used to add roles to user 
         public async Task<AuthenticationResult> LoginAsync(string email, string password)
         {
             var user = await userManager.FindByEmailAsync(email);
@@ -41,6 +45,15 @@ namespace YAPI.Services
             var userHasValidPassword = await userManager.CheckPasswordAsync(user, password);
             if (!userHasValidPassword)
                 return new AuthenticationResult { ErrorMessage = new[] { "password is invalid" } };
+
+            //if (counter == 0)
+            //{
+            //await userManager.AddToRoleAsync(user, "Admin");
+            //    counter++;
+            //}
+            //else
+            //await userManager.AddToRoleAsync(user, "Poster");
+
 
             return await GetAuthenticationResultAsync(user);
         }
@@ -119,8 +132,10 @@ namespace YAPI.Services
             if (existingUser != null)
                 return new AuthenticationResult { ErrorMessage = new[] { "user with this email exist" } };
 
+            var newUserId = Guid.NewGuid();
             var newUser = new AppUser
             {
+                Id = newUserId.ToString(),
                 Email = email,
                 UserName = email
             };
@@ -128,6 +143,9 @@ namespace YAPI.Services
             var createdUser = await userManager.CreateAsync(newUser, password);//gonaa hash this pass mofo
             if (!createdUser.Succeeded)
                 return new AuthenticationResult { ErrorMessage = createdUser.Errors.Select(x => x.Description) };
+
+            //added claim for policy authorization
+            //await userManager.AddClaimAsync(newUser, new Claim(type: "tags.view", "true"));
 
             //token
             return await GetAuthenticationResultAsync(newUser);
@@ -137,15 +155,43 @@ namespace YAPI.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityKey = Encoding.UTF8.GetBytes(options.SecretKey);
+
+
+            var claims = new List<Claim>()
+            {
+                new Claim(type: JwtRegisteredClaimNames.Sub, value: user.Email),
+                new Claim(type: JwtRegisteredClaimNames.Email, value: user.Email),
+                new Claim(type: "Id", value: user.Id),
+                new Claim(type: JwtRegisteredClaimNames.Jti, value: Guid.NewGuid().ToString()),
+            };
+
+            #region claim for jwt
+            //kullanıcı kayıt olurken oluşturulan claimler db den çekilir
+            //var userClaims = await userManager.GetClaimsAsync(user);
+            //ve jwt payloadu içine bu claimler eklenir authorization için 
+            //claims.AddRange(userClaims);
+            #endregion
+
+            var userRoles = await userManager.GetRolesAsync(user);
+            foreach (var userRole in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+                var role = await roleManager.FindByNameAsync(userRole);
+                if (role == null) continue;
+                var roleClaims = await roleManager.GetClaimsAsync(role);
+
+                foreach (var roleClaim in roleClaims)
+                {
+                    if (claims.Contains(roleClaim))
+                        continue;
+
+                    claims.Add(roleClaim);
+                }
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(claims: new[]
-                {
-                    new Claim(type: JwtRegisteredClaimNames.Sub, value: user.Email),
-                    new Claim(type: JwtRegisteredClaimNames.Email, value: user.Email),
-                    new Claim(type: "Id", value: user.Id),
-                    new Claim(type: JwtRegisteredClaimNames.Jti, value: Guid.NewGuid().ToString()),
-                }),
+                Subject = new ClaimsIdentity(claims),
                 NotBefore = DateTime.UtcNow,
                 Expires = DateTime.UtcNow.Add(options.TokenLifeTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(securityKey), algorithm: SecurityAlgorithms.HmacSha256Signature)

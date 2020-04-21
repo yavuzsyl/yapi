@@ -20,6 +20,7 @@ namespace YAPI.Installers
              options.UseSqlServer(
                  configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<AppUser>()
+                .AddRoles<IdentityRole>()//di for roles
                 .AddEntityFrameworkStores<DataContext>();
 
             services.AddScoped<IPostService, PostService>();

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,19 @@ namespace YAPI
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
 
                 await dbContext.Database.MigrateAsync();
+
+                var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+                if(!await roleManager.RoleExistsAsync("Admin"))
+                {
+                    var adminRole = new IdentityRole("Admin");
+                    await roleManager.CreateAsync(adminRole);
+                } 
+                if(!await roleManager.RoleExistsAsync(roleName:"Poster"))
+                {
+                    var posterRole = new IdentityRole(roleName:"Poster");
+                    await roleManager.CreateAsync(posterRole);
+                }
             }
 
             await host.RunAsync();
