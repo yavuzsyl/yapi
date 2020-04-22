@@ -56,6 +56,8 @@ namespace YAPI.Installers
 
             });
 
+            services.AddAuthorization();//roles
+
             //policy combintaion of the rules accessing something in the system
             //services.AddAuthorization(options =>
             //{

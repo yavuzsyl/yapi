@@ -16,5 +16,8 @@ namespace YAPI.Services
         Task<bool> CreatePostAsync(Post postToCreate);
         Task<bool> UserOwnsPostAsync(Guid postId, string userId);
         Task<List<Tag>> GetAllTagsAsync();
+        Task<bool> CreateTagAsync(Tag tag);
+        Task<Tag> GetTagByNameAsync(string tagName);
+        Task<bool> DeleteTagAsync(string tagName);
     }
 }

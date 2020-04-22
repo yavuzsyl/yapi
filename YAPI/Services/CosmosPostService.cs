@@ -27,6 +27,11 @@ namespace YAPI.Services
             return response.IsSuccess;
         }
 
+        public Task<bool> CreateTagAsync(Tag tag)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> DeletePostAsync(Guid id)
         {
             var post = await cosmosStore.FindAsync(id.ToString());
@@ -35,6 +40,11 @@ namespace YAPI.Services
 
             var response = await cosmosStore.RemoveAsync(x => x.Id == post.Id.ToString());
             return response.IsSuccess;
+        }
+
+        public Task<bool> DeleteTagAsync(string tagName)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<List<Tag>> GetAllTagsAsync()
@@ -55,6 +65,11 @@ namespace YAPI.Services
         {
             var posts = await cosmosStore.Query().ToListAsync();
             return posts.Select(x => new Post { Id = Guid.Parse(x.Id), Name = x.Name }).ToList();
+        }
+
+        public Task<Tag> GetTagByNameAsync(string tagName)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> UpdatePostAsync(Post postToUpdate)

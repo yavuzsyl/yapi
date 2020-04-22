@@ -95,5 +95,36 @@ namespace YAPI.Services
 
             }
         }
+
+        public async Task<bool> CreateTagAsync(Tag tag)
+        {
+            tag.Name = tag.Name.ToLower();
+            var existingTag = await dataContext.Tags.SingleOrDefaultAsync(t => t.Name == tag.Name);
+            if (existingTag != null)
+                return true;
+
+            await dataContext.Tags.AddAsync(tag);
+            return await dataContext.SaveChangesAsync() > 0;
+        }
+
+        public async Task<Tag> GetTagByNameAsync(string tagName)
+        {
+            return await dataContext.Tags.SingleOrDefaultAsync(t => t.Name == tagName.ToLower());
+
+        }
+
+        public async Task<bool> DeleteTagAsync(string tagName)
+        {
+            var tag = await dataContext.Tags.SingleOrDefaultAsync(t => t.Name == tagName.ToLower());
+            if (tag == null)
+                return true;
+
+            var postTags = await dataContext.PostTags.Where(pt => pt.TagName == tagName.ToLower()).ToListAsync();
+
+            dataContext.RemoveRange(postTags);
+            dataContext.Remove(tag);
+            return await dataContext.SaveChangesAsync() > 0;
+
+        }
     }
 }

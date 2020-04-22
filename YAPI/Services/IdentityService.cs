@@ -21,12 +21,12 @@ namespace YAPI.Services
     {
         private readonly SignInManager<AppUser> signInManager;
         private readonly UserManager<AppUser> userManager;
-        private readonly RoleManager<AppUser> roleManager;
+        private readonly RoleManager<IdentityRole> roleManager;
         private readonly JwtSettings options;
         private readonly TokenValidationParameters tokenValidationParameters;
         private readonly DataContext dataContext;
 
-        public IdentityService(UserManager<AppUser> userManager, RoleManager<AppUser> roleManager, SignInManager<AppUser> signInManager, IOptions<JwtSettings> options, TokenValidationParameters tokenValidationParameters, DataContext dataContext)
+        public IdentityService(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<AppUser> signInManager, IOptions<JwtSettings> options, TokenValidationParameters tokenValidationParameters, DataContext dataContext)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
