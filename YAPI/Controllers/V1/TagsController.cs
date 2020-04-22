@@ -15,7 +15,7 @@ using YAPI.Services;
 
 namespace YAPI.Controllers.V1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin,Poster")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin,Poster")]//remove roles for policy
     [ApiController]
     public class TagsController : ControllerBase
     {
@@ -45,6 +45,7 @@ namespace YAPI.Controllers.V1
         }   
         
         [HttpPost(ApiRoutes.Tags.Create)]
+        [Authorize(Policy ="WorksForDude")]
         public async Task<IActionResult> Create([FromBody,Required] CreateTagRequest tagReqModel)
         {
             var tag = new Tag()

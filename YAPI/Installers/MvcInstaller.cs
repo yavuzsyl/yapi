@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YAPI.CustomAuthorization;
 using YAPI.Domain;
 using YAPI.Options;
 using YAPI.Services;
@@ -56,7 +58,19 @@ namespace YAPI.Installers
 
             });
 
-            services.AddAuthorization();//roles
+            //custom authorization requirement
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("WorksForDude", configurePolicy: policy =>
+                  {
+                      policy.AddRequirements(new WorksForCompanyRequirement("dude.com"));
+                      policy.RequireRole("Poster", "Admin");
+                  });
+            });
+
+
+
+            services.AddSingleton<IAuthorizationHandler, WorksForCompanyHandler>();
 
             //policy combintaion of the rules accessing something in the system
             //services.AddAuthorization(options =>
