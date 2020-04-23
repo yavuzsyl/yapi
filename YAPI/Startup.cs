@@ -17,6 +17,7 @@ using YAPI.Options;
 using Microsoft.OpenApi.Models;
 using YAPI.Installers;
 using Microsoft.Extensions.Hosting;
+using AutoMapper;
 
 namespace YAPI
 {
@@ -34,6 +35,7 @@ namespace YAPI
         {
             //this is legit maaaaaaaaaaaaaaaaan noice
             services.installServicesInAssembly(Configuration);
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

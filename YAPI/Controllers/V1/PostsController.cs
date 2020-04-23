@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,16 +20,19 @@ namespace YAPI.Controllers.V1
     public class PostsController : ControllerBase
     {
         private readonly IPostService postService;
-        public PostsController(IPostService postService)
+        private readonly IMapper mapper;
+        public PostsController(IPostService postService, IMapper mapper)
         {
             this.postService = postService;
+            this.mapper = mapper;
         }
 
 
         [HttpGet(ApiRoutes.Posts.GetAll)]
         public async Task<IActionResult> GetAllAsync()
         {
-            return Ok(await postService.GetPostsAsync());
+            var posts = await postService.GetPostsAsync();
+            return Ok(mapper.Map<List<PostResponse>>(posts));
         }
 
         [HttpGet(ApiRoutes.Posts.Get)]
@@ -37,7 +41,7 @@ namespace YAPI.Controllers.V1
             var post = await postService.GetPostByIdAsync(postId);
             if (post == null)
                 return NotFound();
-            return Ok(post);
+            return Ok(mapper.Map<PostResponse>(post));
         }
 
 
@@ -61,12 +65,7 @@ namespace YAPI.Controllers.V1
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var location = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", post.Id.ToString());
 
-            var response = new PostResponse() { 
-                Id = post.Id,
-                Name = postRequest.Name,
-                AppUserId = HttpContext.GetUserId(),
-                Tags = postRequest.Tags.Select(x => new PostTag { PostId = postId, TagName = x }).ToList()
-            };
+            var response = mapper.Map<PostResponse>(post);
             return Created(location, response);
         }
 
@@ -81,7 +80,12 @@ namespace YAPI.Controllers.V1
             var isUpdated = await postService.UpdatePostAsync(request, postId);
 
             if (isUpdated)
-                return Ok(request);
+            {
+                var post = await postService.GetPostByIdAsync(postId);
+                return Ok(mapper.Map<PostResponse>(post));
+
+            }
+
 
             return NotFound();
         }

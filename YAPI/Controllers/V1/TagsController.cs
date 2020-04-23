@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YAPI.Contracts.V1;
 using YAPI.Contracts.V1.Requests;
+using YAPI.Contracts.V1.Responses;
 using YAPI.Domain;
 using YAPI.Extensions.AuthExtensions;
 using YAPI.Services;
@@ -20,17 +22,20 @@ namespace YAPI.Controllers.V1
     public class TagsController : ControllerBase
     {
         private readonly IPostService postService;
+        private readonly IMapper mapper;
 
-        public TagsController(IPostService postService)
+        public TagsController(IMapper mapper, IPostService postService)
         {
             this.postService = postService;
+            this.mapper = mapper;
         }
 
         [HttpGet(ApiRoutes.Tags.GetAll)]
         //[Authorize(Policy = "TagViewer")]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await postService.GetAllTagsAsync());
+            var tags = await postService.GetAllTagsAsync();
+            return Ok(mapper.Map<List<TagResponse>>(tags));
         }
 
         [HttpGet(ApiRoutes.Tags.Get)]
@@ -41,7 +46,7 @@ namespace YAPI.Controllers.V1
             if (tag == null)
                 return NoContent();
 
-            return Ok(tag);
+            return Ok(mapper.Map<TagResponse>(tag));
         }   
         
         [HttpPost(ApiRoutes.Tags.Create)]
@@ -63,7 +68,7 @@ namespace YAPI.Controllers.V1
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Tags.Get.Replace("{tagName}", tag.Name);
 
-            return Created(locationUri,tag);//tag response
+            return Created(locationUri,mapper.Map<TagResponse>(tag));
         }
 
         [HttpDelete(ApiRoutes.Tags.Delete)]

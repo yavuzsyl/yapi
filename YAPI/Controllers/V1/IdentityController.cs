@@ -48,7 +48,11 @@ namespace YAPI.Controllers.V1
             return Ok(loginResponse);
         }
 
-        //the client needs to store the expiry date in the local storage and on every request you need to check if it’s in the past. If it is then you use a middleware to call the refresh endpoint and get a new set of keys.
+        /// <summary>
+        /// the client needs to store the expiry date in the local storage and on every request you need to check if it’s in the past. If it is then you use a middleware to call the refresh endpoint and get a new set of keys.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost(ApiRoutes.Identity.Refresh)]
         public async Task<IActionResult> Refresh(RefreshTokenRequest request)
         {
