@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YAPI.CustomAuthorization;
 using YAPI.Domain;
+using YAPI.Filters;
 using YAPI.Options;
 using YAPI.Services;
 
@@ -64,7 +66,7 @@ namespace YAPI.Installers
                 options.AddPolicy("WorksForDude", configurePolicy: policy =>
                   {
                       policy.AddRequirements(new WorksForCompanyRequirement("dude.com"));
-                      policy.RequireRole("Poster", "Admin");
+                      //policy.RequireRole("Poster", "Admin");
                   });
             });
 
@@ -78,7 +80,13 @@ namespace YAPI.Installers
             //    options.AddPolicy(name: "TagViewer", configurePolicy: builder => builder.RequireClaim("tags.view", allowedValues: "true"));
             //});gonna use roles instead of claim
 
-            services.AddMvc(options => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc(options =>
+            {
+                options.EnableEndpointRouting = false;
+                options.Filters.Add<ValidationFilter>();//validation filter
+            })
+                .AddFluentValidation(mvcConfiguration => mvcConfiguration.RegisterValidatorsFromAssemblyContaining<Startup>())//going to register AbstractValidator validators
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSwaggerGen(s =>
             {

@@ -17,7 +17,8 @@ using YAPI.Services;
 
 namespace YAPI.Controllers.V1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin,Poster")]//remove roles for policy
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin,Poster")]//remove roles for policy
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class TagsController : ControllerBase
     {
@@ -53,9 +54,13 @@ namespace YAPI.Controllers.V1
         [Authorize(Policy ="WorksForDude")]
         public async Task<IActionResult> Create([FromBody,Required] CreateTagRequest tagReqModel)
         {
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest("this is not good way to handle validations errors cuz we have to write this everywhere instead of this we are going to write a middleware and that will handle all validations");
+            //}
             var tag = new Tag()
             {
-                Name = tagReqModel.Name,
+                Name = tagReqModel.TagName,
                 CreatorId = HttpContext.GetUserId(),
                 CreatedOn = DateTime.UtcNow
             };
