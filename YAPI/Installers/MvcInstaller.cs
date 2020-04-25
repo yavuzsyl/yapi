@@ -84,41 +84,12 @@ namespace YAPI.Installers
             {
                 options.EnableEndpointRouting = false;
                 options.Filters.Add<ValidationFilter>();//validation filter
-            })
-                .AddFluentValidation(mvcConfiguration => mvcConfiguration.RegisterValidatorsFromAssemblyContaining<Startup>())//going to register AbstractValidator validators
+           
+            }).AddFluentValidation(mvcConfiguration => mvcConfiguration
+                .RegisterValidatorsFromAssemblyContaining<Startup>())//going to register AbstractValidator validators
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            services.AddSwaggerGen(s =>
-            {
-                s.SwaggerDoc("v1", new OpenApiInfo() { Title = "yapi", Version = "v1" });
-
-                s.AddSecurityDefinition(name: "Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "Jwt Authorization header using the bearer scheme",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey
-                });
-
-                s.AddSecurityRequirement(new OpenApiSecurityRequirement()
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[]{}
-                    }
-
-                });
-
-            });
-
-
+           
         }
     }
 }
