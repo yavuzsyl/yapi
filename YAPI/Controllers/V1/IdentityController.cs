@@ -8,6 +8,7 @@ using Yapi.Contracts;
 using Yapi.Contracts.V1;
 using Yapi.Contracts.V1.Requests;
 using Yapi.Contracts.V1.Responses;
+using YAPI.Filters;
 using YAPI.Services;
 
 namespace YAPI.Controllers.V1
@@ -23,6 +24,7 @@ namespace YAPI.Controllers.V1
         }
 
         [HttpPost(ApiRoutes.Identity.Register)]
+        [ApiKeyAuth]
         public async Task<IActionResult> Register([FromBody]RegistrationRequest request)
         {
             if (!ModelState.IsValid)
