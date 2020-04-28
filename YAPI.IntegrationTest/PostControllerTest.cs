@@ -6,8 +6,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using YAPI.Contracts.V1;
-using YAPI.Contracts.V1.Requests;
+using Yapi.Contracts.V1;
+using Yapi.Contracts.V1.Requests;
 using YAPI.Domain;
 
 namespace YAPI.IntegrationTest

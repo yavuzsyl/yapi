@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using YAPI.Contracts.V1.Requests;
+using Yapi.Contracts.V1.Requests;
 using YAPI.Domain;
 
 namespace YAPI.Services

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using YAPI.Contracts.V1.Responses;
+using Yapi.Contracts.V1.Responses;
 
 namespace YAPI.Filters
 {

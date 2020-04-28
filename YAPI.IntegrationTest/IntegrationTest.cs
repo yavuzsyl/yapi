@@ -8,9 +8,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using YAPI.Contracts.V1;
-using YAPI.Contracts.V1.Requests;
-using YAPI.Contracts.V1.Responses;
+using Yapi.Contracts.V1;
+using Yapi.Contracts.V1.Requests;
+using Yapi.Contracts.V1.Responses;
 using YAPI.Data;
 
 namespace YAPI.IntegrationTest

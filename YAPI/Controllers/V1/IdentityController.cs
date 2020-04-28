@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using YAPI.Contracts.V1;
-using YAPI.Contracts.V1.Requests;
-using YAPI.Contracts.V1.Responses;
+using Yapi.Contracts;
+using Yapi.Contracts.V1;
+using Yapi.Contracts.V1.Requests;
+using Yapi.Contracts.V1.Responses;
 using YAPI.Services;
 
 namespace YAPI.Controllers.V1

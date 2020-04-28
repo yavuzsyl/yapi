@@ -11,7 +11,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using YAPI.Contracts.V1.Responses;
+using Yapi.Contracts.V1.Responses;
 using YAPI.Data;
 using YAPI.Domain;
 using YAPI.Options;

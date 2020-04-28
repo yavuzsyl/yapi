@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using YAPI.Contracts.V1.Requests;
+using Yapi.Contracts.V1.Requests;
 using YAPI.Domain;
 
 namespace YAPI.Services
@@ -93,6 +93,8 @@ namespace YAPI.Services
         {
             throw new NotImplementedException();
         }
+
+   
 
         public Task<bool> UserOwnsPostAsync(Guid postId, string userId)
         {

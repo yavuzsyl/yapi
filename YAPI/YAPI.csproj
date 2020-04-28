@@ -34,7 +34,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\Yapi.Contracts\Yapi.Contracts.csproj" />
+    <ProjectReference Include="..\Yapi.Contracts\Yapi.Contracts.csproj" />
   </ItemGroup>
+  
+  
 
 </Project>
