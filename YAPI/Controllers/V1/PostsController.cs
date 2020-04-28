@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Yapi.Contracts.V1;
 using Yapi.Contracts.V1.Requests;
 using Yapi.Contracts.V1.Responses;
+using YAPI.Cache;
 using YAPI.Domain;
 using YAPI.Extensions.AuthExtensions;
 using YAPI.Services;
@@ -29,6 +30,7 @@ namespace YAPI.Controllers.V1
 
 
         [HttpGet(ApiRoutes.Posts.GetAll)]
+        [Cached(600)]
         public async Task<IActionResult> GetAllAsync()
         {
             var posts = await postService.GetPostsAsync();

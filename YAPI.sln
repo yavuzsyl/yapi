@@ -5,15 +5,13 @@ VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAPI", "YAPI\YAPI.csproj", "{B7BAB1DD-21A1-4ED7-A26C-785C60CBF460}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B1C3E644-23DE-4A83-A056-C91E621C3D05}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAPI.IntegrationTest", "YAPI.IntegrationTest\YAPI.IntegrationTest.csproj", "{33898B25-C857-4817-B8CE-2FFE4628B096}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yapi.Sdk", "Yapi.Sdk\Yapi.Sdk.csproj", "{33A2BE0B-BCCD-4CD7-B556-655C3849F431}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yapi.Sdk", "Yapi.Sdk\Yapi.Sdk.csproj", "{33A2BE0B-BCCD-4CD7-B556-655C3849F431}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yapi.Contracts", "Yapi.Contracts\Yapi.Contracts.csproj", "{71609BFC-EE48-4DED-A214-20D8D3BB8A0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yapi.Contracts", "Yapi.Contracts\Yapi.Contracts.csproj", "{71609BFC-EE48-4DED-A214-20D8D3BB8A0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yapi.Sdk.Sample", "Yapi.Sdk.Sample\Yapi.Sdk.Sample.csproj", "{FBA96B85-644D-4FB0-935B-E3B1FD966219}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yapi.Sdk.Sample", "Yapi.Sdk.Sample\Yapi.Sdk.Sample.csproj", "{FBA96B85-644D-4FB0-935B-E3B1FD966219}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +23,6 @@ Global
 		{B7BAB1DD-21A1-4ED7-A26C-785C60CBF460}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7BAB1DD-21A1-4ED7-A26C-785C60CBF460}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7BAB1DD-21A1-4ED7-A26C-785C60CBF460}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B1C3E644-23DE-4A83-A056-C91E621C3D05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1C3E644-23DE-4A83-A056-C91E621C3D05}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B1C3E644-23DE-4A83-A056-C91E621C3D05}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B1C3E644-23DE-4A83-A056-C91E621C3D05}.Release|Any CPU.Build.0 = Release|Any CPU
 		{33898B25-C857-4817-B8CE-2FFE4628B096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{33898B25-C857-4817-B8CE-2FFE4628B096}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33898B25-C857-4817-B8CE-2FFE4628B096}.Release|Any CPU.ActiveCfg = Release|Any CPU
