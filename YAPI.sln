@@ -9,6 +9,12 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAPI.IntegrationTest", "YAPI.IntegrationTest\YAPI.IntegrationTest.csproj", "{33898B25-C857-4817-B8CE-2FFE4628B096}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yapi.Sdk", "..\Yapi.Sdk\Yapi.Sdk.csproj", "{5A96BDE3-8777-4280-9F1C-B92C53E04489}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yapi.Sdk.Sample", "..\Yapi.Sdk.Sample\Yapi.Sdk.Sample.csproj", "{20F44FAE-E1B5-4B45-9467-DE33BD752E54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yapi.Contracts", "..\Yapi.Contracts\Yapi.Contracts.csproj", "{3BF03DD7-459A-47FB-845F-332BD1C289FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +33,18 @@ Global
 		{33898B25-C857-4817-B8CE-2FFE4628B096}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33898B25-C857-4817-B8CE-2FFE4628B096}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33898B25-C857-4817-B8CE-2FFE4628B096}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A96BDE3-8777-4280-9F1C-B92C53E04489}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A96BDE3-8777-4280-9F1C-B92C53E04489}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A96BDE3-8777-4280-9F1C-B92C53E04489}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A96BDE3-8777-4280-9F1C-B92C53E04489}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20F44FAE-E1B5-4B45-9467-DE33BD752E54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20F44FAE-E1B5-4B45-9467-DE33BD752E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20F44FAE-E1B5-4B45-9467-DE33BD752E54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20F44FAE-E1B5-4B45-9467-DE33BD752E54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BF03DD7-459A-47FB-845F-332BD1C289FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BF03DD7-459A-47FB-845F-332BD1C289FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BF03DD7-459A-47FB-845F-332BD1C289FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BF03DD7-459A-47FB-845F-332BD1C289FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

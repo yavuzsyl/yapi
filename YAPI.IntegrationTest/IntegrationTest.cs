@@ -12,7 +12,6 @@ using YAPI.Contracts.V1;
 using YAPI.Contracts.V1.Requests;
 using YAPI.Contracts.V1.Responses;
 using YAPI.Data;
-using YAPI.Domain;
 
 namespace YAPI.IntegrationTest
 {
@@ -52,7 +51,7 @@ namespace YAPI.IntegrationTest
                 Password = "123456It!"
             });
 
-            var regsitrationResponse = await response.Content.ReadAsAsync<AuthenticationResult>();
+            var regsitrationResponse = await response.Content.ReadAsAsync<AuthenticationResponse>();
             return regsitrationResponse.Token;
         }
 

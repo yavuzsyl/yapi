@@ -46,6 +46,7 @@ namespace YAPI.Controllers.V1
 
 
         [HttpPost(ApiRoutes.Posts.Create)]
+        [Authorize(Policy = "WorksForDude")]
         public async Task<IActionResult> CreateAsync([FromBody] CreatePostRequest postRequest)
         {
             var postId = Guid.NewGuid();

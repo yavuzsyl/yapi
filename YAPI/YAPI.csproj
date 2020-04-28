@@ -32,5 +32,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.2.1" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\Yapi.Contracts\Yapi.Contracts.csproj" />
+  </ItemGroup>
 
 </Project>

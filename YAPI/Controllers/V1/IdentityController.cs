@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using YAPI.Contracts.V1;
 using YAPI.Contracts.V1.Requests;
-using YAPI.Domain;
+using YAPI.Contracts.V1.Responses;
 using YAPI.Services;
 
 namespace YAPI.Controllers.V1
@@ -26,7 +26,7 @@ namespace YAPI.Controllers.V1
         public async Task<IActionResult> Register([FromBody]RegistrationRequest request)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new AuthenticationResult() { ErrorMessage = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
+                return BadRequest(new AuthenticationResponse() { ErrorMessage = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
 
             var registrationResponse = await identityService.RegisterAsync(request.Email, request.Password);
             if (!registrationResponse.Success)
@@ -39,7 +39,7 @@ namespace YAPI.Controllers.V1
         public async Task<IActionResult> Login([FromBody]LoginRequest request)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new AuthenticationResult() { ErrorMessage = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
+                return BadRequest(new AuthenticationResponse() { ErrorMessage = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
 
             var loginResponse = await identityService.LoginAsync(request.Email, request.Password);
             if (!loginResponse.Success)

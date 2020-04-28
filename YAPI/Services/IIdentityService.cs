@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using YAPI.Domain;
+using YAPI.Contracts.V1.Responses;
 
 namespace YAPI.Services
 {
     public interface IIdentityService
     {
-        Task<AuthenticationResult> RegisterAsync(string email, string password);
-        Task<AuthenticationResult> LoginAsync(string email, string password);
-        Task<AuthenticationResult> RefreshTokenAsync(string token, string refreshToken);
+        Task<AuthenticationResponse> RegisterAsync(string email, string password);
+        Task<AuthenticationResponse> LoginAsync(string email, string password);
+        Task<AuthenticationResponse> RefreshTokenAsync(string token, string refreshToken);
     }
 }

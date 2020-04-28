@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using YAPI.Contracts.V1.Responses;
 using YAPI.Data;
 using YAPI.Domain;
 using YAPI.Options;
@@ -36,15 +37,15 @@ namespace YAPI.Services
             this.dataContext = dataContext;
         }
         //public static int counter = 0; used to add roles to user 
-        public async Task<AuthenticationResult> LoginAsync(string email, string password)
+        public async Task<AuthenticationResponse> LoginAsync(string email, string password)
         {
             var user = await userManager.FindByEmailAsync(email);
             if (user == null)
-                return new AuthenticationResult { ErrorMessage = new[] { "user doesnt exist" } };
+                return new AuthenticationResponse { ErrorMessage = new[] { "user doesnt exist" } };
 
             var userHasValidPassword = await userManager.CheckPasswordAsync(user, password);
             if (!userHasValidPassword)
-                return new AuthenticationResult { ErrorMessage = new[] { "password is invalid" } };
+                return new AuthenticationResponse { ErrorMessage = new[] { "password is invalid" } };
 
             //if (counter == 0)
             //{
@@ -58,11 +59,11 @@ namespace YAPI.Services
             return await GetAuthenticationResultAsync(user);
         }
 
-        public async Task<AuthenticationResult> RefreshTokenAsync(string token, string refreshToken)
+        public async Task<AuthenticationResponse> RefreshTokenAsync(string token, string refreshToken)
         {
             var validatedToken = GetPrincipalFromToken(token);
             if (validatedToken == null)
-                return new AuthenticationResult { ErrorMessage = new[] { "Invalid token" } };
+                return new AuthenticationResponse { ErrorMessage = new[] { "Invalid token" } };
 
             //token expire time
             var expiryDateUnix = long.Parse(validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
@@ -70,22 +71,22 @@ namespace YAPI.Services
                 .AddSeconds(expiryDateUnix);
 
             if (expiryDateTimeUtc > DateTime.UtcNow)
-                return new AuthenticationResult { ErrorMessage = new[] { "this token hasnt expired yet" } };
+                return new AuthenticationResponse { ErrorMessage = new[] { "this token hasnt expired yet" } };
 
             var jti = validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
 
             var storedRefreshToken = await dataContext.RefreshTokens.SingleOrDefaultAsync(x => x.Token == refreshToken);
             if (storedRefreshToken == null)
-                return new AuthenticationResult { ErrorMessage = new[] { "this refresh token doesnt exist" } };
+                return new AuthenticationResponse { ErrorMessage = new[] { "this refresh token doesnt exist" } };
 
             if (DateTime.UtcNow > storedRefreshToken.ExpiryDate)
-                return new AuthenticationResult { ErrorMessage = new[] { "this refresh token has expired" } };
+                return new AuthenticationResponse { ErrorMessage = new[] { "this refresh token has expired" } };
             if (storedRefreshToken.InValidated)
-                return new AuthenticationResult { ErrorMessage = new[] { "this refresh token has been invalidate" } };
+                return new AuthenticationResponse { ErrorMessage = new[] { "this refresh token has been invalidate" } };
             if (storedRefreshToken.Used)
-                return new AuthenticationResult { ErrorMessage = new[] { "this refresh token has been used" } };
+                return new AuthenticationResponse { ErrorMessage = new[] { "this refresh token has been used" } };
             if (storedRefreshToken.JwtId != jti)
-                return new AuthenticationResult { ErrorMessage = new[] { "this refresh doesnt match this JWT" } };
+                return new AuthenticationResponse { ErrorMessage = new[] { "this refresh doesnt match this JWT" } };
 
             storedRefreshToken.Used = true;
             dataContext.RefreshTokens.Update(storedRefreshToken);
@@ -126,11 +127,11 @@ namespace YAPI.Services
                     jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        public async Task<AuthenticationResult> RegisterAsync(string email, string password)
+        public async Task<AuthenticationResponse> RegisterAsync(string email, string password)
         {
             var existingUser = await userManager.FindByEmailAsync(email);
             if (existingUser != null)
-                return new AuthenticationResult { ErrorMessage = new[] { "user with this email exist" } };
+                return new AuthenticationResponse { ErrorMessage = new[] { "user with this email exist" } };
 
             var newUserId = Guid.NewGuid();
             var newUser = new AppUser
@@ -142,7 +143,7 @@ namespace YAPI.Services
 
             var createdUser = await userManager.CreateAsync(newUser, password);//gonaa hash this pass mofo
             if (!createdUser.Succeeded)
-                return new AuthenticationResult { ErrorMessage = createdUser.Errors.Select(x => x.Description) };
+                return new AuthenticationResponse { ErrorMessage = createdUser.Errors.Select(x => x.Description) };
 
             //added claim for policy authorization
             //await userManager.AddClaimAsync(newUser, new Claim(type: "tags.view", "true"));
@@ -151,7 +152,7 @@ namespace YAPI.Services
             return await GetAuthenticationResultAsync(newUser);
         }
 
-        private async Task<AuthenticationResult> GetAuthenticationResultAsync(AppUser user)
+        private async Task<AuthenticationResponse> GetAuthenticationResultAsync(AppUser user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityKey = Encoding.UTF8.GetBytes(options.SecretKey);
@@ -210,7 +211,7 @@ namespace YAPI.Services
             await dataContext.RefreshTokens.AddAsync(refreshToken);
             await dataContext.SaveChangesAsync();
 
-            return new AuthenticationResult
+            return new AuthenticationResponse
             {
                 Token = tokenHandler.WriteToken(token),
                 RefreshToken = refreshToken.Token,
