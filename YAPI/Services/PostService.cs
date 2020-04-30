@@ -37,8 +37,14 @@ namespace YAPI.Services
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<Post>> GetPostsAsync()
+        public async Task<List<Post>> GetPostsAsync(PaginationFilter paginationFilter)
         {
+            if (paginationFilter != null)
+            {
+                var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
+                return await dataContext.Posts.Include(x => x.Tags).Skip(skip).ToListAsync();
+
+            }
             return await dataContext.Posts.Include(x => x.Tags).ToListAsync();
         }
 

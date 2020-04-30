@@ -41,7 +41,7 @@ namespace YAPI.Controllers.V1
         public async Task<IActionResult> GetAll()
         {
             var tags = await postService.GetAllTagsAsync();
-            return Ok(mapper.Map<List<TagResponse>>(tags));
+            return Ok(new Response<List<TagResponse>>(mapper.Map<List<TagResponse>>(tags)));
         }
 
         [HttpGet(ApiRoutes.Tags.Get)]
@@ -52,7 +52,7 @@ namespace YAPI.Controllers.V1
             if (tag == null)
                 return NoContent();
 
-            return Ok(mapper.Map<TagResponse>(tag));
+            return Ok(new Response<TagResponse>(mapper.Map<TagResponse>(tag)));
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace YAPI.Controllers.V1
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Tags.Get.Replace("{tagName}", tag.Name);
 
-            return Created(locationUri, mapper.Map<TagResponse>(tag));
+            return Created(locationUri, new Response<TagResponse>(mapper.Map<TagResponse>(tag)));
         }
 
         [HttpDelete(ApiRoutes.Tags.Delete)]

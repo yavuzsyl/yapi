@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Yapi.Contracts.V1;
 using Yapi.Contracts.V1.Requests;
+using Yapi.Contracts.V1.Requests.Quueries;
 using Yapi.Contracts.V1.Responses;
 using YAPI.Cache;
 using YAPI.Domain;
@@ -22,19 +23,32 @@ namespace YAPI.Controllers.V1
     {
         private readonly IPostService postService;
         private readonly IMapper mapper;
-        public PostsController(IPostService postService, IMapper mapper)
+        private readonly IUriService uriService;
+        public PostsController(IPostService postService, IMapper mapper, IUriService uriService)
         {
             this.postService = postService;
             this.mapper = mapper;
+            this.uriService = uriService;
         }
 
 
         [HttpGet(ApiRoutes.Posts.GetAll)]
         [Cached(600)]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery] PaginationQuery paginationQuery)
         {
-            var posts = await postService.GetPostsAsync();
-            return Ok(mapper.Map<List<PostResponse>>(posts));
+            var paginationFilter = mapper.Map<PaginationFilter>(paginationQuery);
+            var posts = await postService.GetPostsAsync(paginationFilter);
+            var pagedPosts = mapper.Map<List<PostResponse>>(posts);
+
+            if (paginationFilter == null || paginationFilter.PageNumber < 1 || paginationFilter.PageSize < 1)
+            {
+                return Ok(new PagedResponse<PostResponse>(pagedPosts));
+
+            }
+
+            var pagedResponse = PaginationHelper.CreatePaginatedResponse<PostResponse>(uriService, paginationFilter, pagedPosts);
+
+            return Ok(pagedResponse);
         }
 
         [HttpGet(ApiRoutes.Posts.Get)]
@@ -43,7 +57,7 @@ namespace YAPI.Controllers.V1
             var post = await postService.GetPostByIdAsync(postId);
             if (post == null)
                 return NotFound();
-            return Ok(mapper.Map<PostResponse>(post));
+            return Ok(new Response<PostResponse>(mapper.Map<PostResponse>(post)));
         }
 
 
@@ -65,11 +79,12 @@ namespace YAPI.Controllers.V1
             if (!result)
                 return BadRequest();
 
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var location = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", post.Id.ToString());
+            //var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
+            //var location = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", post.Id.ToString());
 
             var response = mapper.Map<PostResponse>(post);
-            return Created(location, response);
+            var location = uriService.GetPostUri(post.Id.ToString());
+            return Created(location, new Response<PostResponse>(response));
         }
 
         [HttpPut(ApiRoutes.Posts.Update)]
@@ -85,7 +100,7 @@ namespace YAPI.Controllers.V1
             if (isUpdated)
             {
                 var post = await postService.GetPostByIdAsync(postId);
-                return Ok(mapper.Map<PostResponse>(post));
+                return Ok(new Response<PostResponse>(mapper.Map<PostResponse>(post)));
 
             }
 

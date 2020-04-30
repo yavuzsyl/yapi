@@ -67,6 +67,11 @@ namespace YAPI.Services
             return posts.Select(x => new Post { Id = Guid.Parse(x.Id), Name = x.Name }).ToList();
         }
 
+        public Task<List<Post>> GetPostsAsync(PaginationFilter paginationFilter)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Tag> GetTagByNameAsync(string tagName)
         {
             throw new NotImplementedException();
