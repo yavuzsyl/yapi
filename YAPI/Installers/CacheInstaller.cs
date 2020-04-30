@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,9 @@ namespace YAPI.Installers
 
             if (!redisSettings.Enabled)
                 return;
-
+            //healthcheck için service containera eklendi
+            services.AddSingleton<IConnectionMultiplexer>(_ =>
+              ConnectionMultiplexer.Connect(redisSettings.ConnectionString));
             services.AddStackExchangeRedisCache(options => options.Configuration = redisSettings.ConnectionString);
             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
         }
