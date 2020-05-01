@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  yapi:
-    image: ${DOCKER_REGISTRY-}yapi
-    build:
-      context: .
-      dockerfile: YAPI\Dockerfile
