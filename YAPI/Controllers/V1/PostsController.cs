@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Yapi.Contracts.V1;
 using Yapi.Contracts.V1.Requests;
-using Yapi.Contracts.V1.Requests.Quueries;
+using Yapi.Contracts.V1.Requests.Queries;
 using Yapi.Contracts.V1.Responses;
 using YAPI.Cache;
 using YAPI.Domain;
@@ -33,11 +33,12 @@ namespace YAPI.Controllers.V1
 
 
         [HttpGet(ApiRoutes.Posts.GetAll)]
-        [Cached(600)]
-        public async Task<IActionResult> GetAllAsync([FromQuery] PaginationQuery paginationQuery)
+        [Cached(10)]
+        public async Task<IActionResult> GetAllAsync([FromQuery] GetAllPostsQuery query,[FromQuery] PaginationQuery paginationQuery)
         {
             var paginationFilter = mapper.Map<PaginationFilter>(paginationQuery);
-            var posts = await postService.GetPostsAsync(paginationFilter);
+            var filter = mapper.Map<GetAllPostsFilter>(query);
+            var posts = await postService.GetPostsAsync(filter, paginationFilter);
             var pagedPosts = mapper.Map<List<PostResponse>>(posts);
 
             if (paginationFilter == null || paginationFilter.PageNumber < 1 || paginationFilter.PageSize < 1)
@@ -45,6 +46,8 @@ namespace YAPI.Controllers.V1
                 return Ok(new PagedResponse<PostResponse>(pagedPosts));
 
             }
+
+
 
             var pagedResponse = PaginationHelper.CreatePaginatedResponse<PostResponse>(uriService, paginationFilter, pagedPosts);
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Yapi.Contracts.V1.Requests.Quueries
+namespace Yapi.Contracts.V1.Requests.Queries
 {
     public class PaginationQuery
     {

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace YAPI
+namespace YAPI.Domain
 {
-    public class docker_compose
+    public class GetAllPostsFilter
     {
+        public string UserId { get; set; }
     }
 }

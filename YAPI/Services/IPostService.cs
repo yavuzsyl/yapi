@@ -9,7 +9,7 @@ namespace YAPI.Services
 {
     public interface IPostService
     {
-        Task<List<Post>> GetPostsAsync(PaginationFilter paginationFilter);
+        Task<List<Post>> GetPostsAsync(GetAllPostsFilter filter ,PaginationFilter paginationFilter);
         Task<Post> GetPostByIdAsync(Guid id);
         Task<bool> UpdatePostAsync(UpdatePostRequest postToUpdate, Guid postId);
         Task<bool> DeletePostAsync(Guid id);

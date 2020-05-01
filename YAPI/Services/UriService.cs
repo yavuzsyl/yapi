@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Yapi.Contracts.V1;
-using Yapi.Contracts.V1.Requests.Quueries;
+using Yapi.Contracts.V1.Requests.Queries;
 
 namespace YAPI.Services
 {

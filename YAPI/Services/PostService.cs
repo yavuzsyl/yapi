@@ -37,15 +37,26 @@ namespace YAPI.Services
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<Post>> GetPostsAsync(PaginationFilter paginationFilter)
+        public async Task<List<Post>> GetPostsAsync(GetAllPostsFilter filter, PaginationFilter paginationFilter)
         {
+            var queryable = dataContext.Posts.AsQueryable();
             if (paginationFilter != null)
             {
+                queryable = AddFiltersOnQuery(filter, queryable);
                 var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
-                return await dataContext.Posts.Include(x => x.Tags).Skip(skip).ToListAsync();
+                return await queryable.Include(x => x.Tags).Skip(skip).ToListAsync();
 
             }
             return await dataContext.Posts.Include(x => x.Tags).ToListAsync();
+        }
+
+        private IQueryable<Post> AddFiltersOnQuery(GetAllPostsFilter filter, IQueryable<Post> queryable)
+        {
+            if (!string.IsNullOrEmpty(filter?.UserId))
+            {
+                queryable = queryable.Where(x => x.AppUserId == filter.UserId);
+            }
+            return queryable;
         }
 
         public async Task<bool> UpdatePostAsync(UpdatePostRequest postToUpdate, Guid postId)

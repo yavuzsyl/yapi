@@ -72,6 +72,11 @@ namespace YAPI.Services
             throw new NotImplementedException();
         }
 
+        public Task<List<Post>> GetPostsAsync(GetAllPostsFilter filter, PaginationFilter paginationFilter)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Tag> GetTagByNameAsync(string tagName)
         {
             throw new NotImplementedException();
