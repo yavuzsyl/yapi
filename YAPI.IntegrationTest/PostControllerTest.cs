@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Yapi.Contracts.V1;
 using Yapi.Contracts.V1.Requests;
+using Yapi.Contracts.V1.Responses;
 using YAPI.Domain;
 
 namespace YAPI.IntegrationTest
@@ -26,7 +27,7 @@ namespace YAPI.IntegrationTest
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            (await response.Content.ReadAsAsync<List<Post>>()).Should().BeEmpty();
+            (await response.Content.ReadAsAsync<Response<List<PostResponse>>>()).Data.Should().BeEmpty();
         }
 
 
@@ -35,16 +36,16 @@ namespace YAPI.IntegrationTest
         {
             //Arange
             await AuthenticateAsync();
-            var willBeCreatedPost = await CreatePostAsync(new CreatePostRequest { Name = "test" });
+            var willBeCreatedPost = await CreatePostAsync(new CreatePostRequest { Name = "test", Tags = new[] { "integrationTag1" } });
 
             //Act
             var response = await testClient.GetAsync(ApiRoutes.Posts.Get.Replace("{postId}", willBeCreatedPost.Id.ToString()));
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var returnedPostFromGet = await response.Content.ReadAsAsync<Post>();
+            var returnedPostFromGet = (await response.Content.ReadAsAsync<Response<PostResponse>>()).Data;
             returnedPostFromGet.Id.Should().Be(willBeCreatedPost.Id);
-         }
+        }
 
     }
 }

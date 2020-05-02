@@ -15,6 +15,6 @@ namespace Yapi.Contracts.V1.Responses
             Data = response;
         }
 
-        private T Data { get; set; }
+        public T Data { get; set; }
     }
 }

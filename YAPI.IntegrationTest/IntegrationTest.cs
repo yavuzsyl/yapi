@@ -45,10 +45,11 @@ namespace YAPI.IntegrationTest
         }
         private async Task<string> GetJwtAsync()
         {
+            testClient.DefaultRequestHeaders.Add("ApiKey", "Secretsstts");
             var response = await testClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegistrationRequest
             {
-                Email = "integration@mail.com",
-                Password = "123456It!"
+                Email = "user@dude.com",
+                Password = "9585200Ys!"
             });
 
             var regsitrationResponse = await response.Content.ReadAsAsync<AuthenticationResponse>();
@@ -58,7 +59,7 @@ namespace YAPI.IntegrationTest
         protected async Task<PostResponse> CreatePostAsync(CreatePostRequest createPostRequest)
         {
             var response = await testClient.PostAsJsonAsync(ApiRoutes.Posts.Create, createPostRequest);
-            return (await response.Content.ReadAsAsync<PostResponse>());
+            return (await response.Content.ReadAsAsync<Response<PostResponse>>()).Data;
         }
 
         /// <summary>
