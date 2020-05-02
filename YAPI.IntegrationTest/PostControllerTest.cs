@@ -27,7 +27,7 @@ namespace YAPI.IntegrationTest
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            (await response.Content.ReadAsAsync<Response<List<PostResponse>>>()).Data.Should().BeEmpty();
+            (await response.Content.ReadAsAsync<PagedResponse<PostResponse>>()).Data.Should().BeEmpty();
         }
 
 

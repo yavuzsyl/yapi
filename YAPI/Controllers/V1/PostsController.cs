@@ -33,7 +33,7 @@ namespace YAPI.Controllers.V1
 
 
         [HttpGet(ApiRoutes.Posts.GetAll)]
-        [Cached(10)]
+        [Cached(1)]
         public async Task<IActionResult> GetAllAsync([FromQuery] GetAllPostsQuery query,[FromQuery] PaginationQuery paginationQuery)
         {
             var paginationFilter = mapper.Map<PaginationFilter>(paginationQuery);
