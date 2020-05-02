@@ -7,8 +7,8 @@ namespace Yapi.Contracts.V1.Responses
     public class PostResponse
     {
         public Guid Id { get; set; }
-        public string Name { get; internal set; }
-        public string AppUserId { get; internal set; }
-        public List<TagResponse> Tags { get; internal set; }
+        public string Name { get; set; }
+        public string AppUserId { get; set; }
+        public List<TagResponse> Tags { get; set; }
     }
 }

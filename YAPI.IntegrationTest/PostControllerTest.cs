@@ -51,7 +51,7 @@ namespace YAPI.IntegrationTest
             var returnedPostFromGet = (await response.Content.ReadAsAsync<Response<PostResponse>>()).Data;
             returnedPostFromGet.Id.Should().Be(willBeCreatedPost.Id);
             returnedPostFromGet.Name.Should().Be(willBeCreatedPost.Name);
-            returnedPostFromGet.Tags.Single().Name.Should().Be("integrationTag1");
+            returnedPostFromGet.Tags.Single().Name.Should().Be("integrationtag1");
         }
 
     }

@@ -14,7 +14,7 @@ namespace YAPI.MappingProfiles
         {
             CreateMap<Post, PostResponse>()
                 .ForMember(p=> p.Tags,options => 
-                    options.MapFrom(src=> src.Tags.Select(t=> new TagResponse {Name = src.Name })));
+                    options.MapFrom(src=> src.Tags.Select(t=> new TagResponse {Name = t.TagName })));
 
             CreateMap<Tag, TagResponse>();
         }
