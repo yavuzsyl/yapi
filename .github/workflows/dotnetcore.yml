@@ -16,8 +16,6 @@ jobs:
    
         redis:
           - '6.0'
-          - '5.0'
-          - '4.0'  
     name: Redis ${{ matrix.redis }} on ${{ matrix.os }}
 
     steps:
@@ -28,10 +26,6 @@ jobs:
         redis-version: ${{ matrix.redis }}
         auto-start: "false"
 
-    - name: tests with Test::RedisServer
-      run: |
-          cpanm Test::RedisServer
-          prove -lv t
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
