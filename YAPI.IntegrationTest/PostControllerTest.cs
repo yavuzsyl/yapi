@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -36,7 +37,11 @@ namespace YAPI.IntegrationTest
         {
             //Arange
             await AuthenticateAsync();
-            var willBeCreatedPost = await CreatePostAsync(new CreatePostRequest { Name = "test", Tags = new[] { "integrationTag1" } });
+            var willBeCreatedPost = await CreatePostAsync(new CreatePostRequest
+            {
+                Name = "test",
+                Tags = new[] { "integrationTag1" }
+            });
 
             //Act
             var response = await testClient.GetAsync(ApiRoutes.Posts.Get.Replace("{postId}", willBeCreatedPost.Id.ToString()));
@@ -45,6 +50,8 @@ namespace YAPI.IntegrationTest
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var returnedPostFromGet = (await response.Content.ReadAsAsync<Response<PostResponse>>()).Data;
             returnedPostFromGet.Id.Should().Be(willBeCreatedPost.Id);
+            returnedPostFromGet.Name.Should().Be(willBeCreatedPost.Name);
+            returnedPostFromGet.Tags.Single().Name.Should().Be("integrationTag1");
         }
 
     }
