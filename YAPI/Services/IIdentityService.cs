@@ -11,5 +11,8 @@ namespace YAPI.Services
         Task<AuthenticationResponse> RegisterAsync(string email, string password);
         Task<AuthenticationResponse> LoginAsync(string email, string password);
         Task<AuthenticationResponse> RefreshTokenAsync(string token, string refreshToken);
+        //facebook api den gelen tokenı basacağız kardeş
+        Task<AuthenticationResponse> LoginWithFacebookAsync(string facebookAccessToken);
+
     }
 }

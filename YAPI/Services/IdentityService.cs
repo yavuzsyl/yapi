@@ -26,8 +26,12 @@ namespace YAPI.Services
         private readonly JwtSettings options;
         private readonly TokenValidationParameters tokenValidationParameters;
         private readonly DataContext dataContext;
+        private readonly IFacebookAuthService facebookAuthService;
 
-        public IdentityService(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<AppUser> signInManager, IOptions<JwtSettings> options, TokenValidationParameters tokenValidationParameters, DataContext dataContext)
+        public IdentityService(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager,
+            SignInManager<AppUser> signInManager, IOptions<JwtSettings> options,
+            TokenValidationParameters tokenValidationParameters, DataContext dataContext,
+            IFacebookAuthService facebookAuthService)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
@@ -35,17 +39,18 @@ namespace YAPI.Services
             this.options = options.Value;
             this.tokenValidationParameters = tokenValidationParameters;
             this.dataContext = dataContext;
+            this.facebookAuthService = facebookAuthService;
         }
         //public static int counter = 0; used to add roles to user 
         public async Task<AuthenticationResponse> LoginAsync(string email, string password)
         {
             var user = await userManager.FindByEmailAsync(email);
             if (user == null)
-                return new AuthenticationResponse { ErrorMessage = new[] { "user doesnt exist" } };
+                return new AuthenticationResponse { Errors = new[] { "user doesnt exist" } };
 
             var userHasValidPassword = await userManager.CheckPasswordAsync(user, password);
             if (!userHasValidPassword)
-                return new AuthenticationResponse { ErrorMessage = new[] { "password is invalid" } };
+                return new AuthenticationResponse { Errors = new[] { "password is invalid" } };
 
             //if (counter == 0)
             //{
@@ -63,7 +68,7 @@ namespace YAPI.Services
         {
             var validatedToken = GetPrincipalFromToken(token);
             if (validatedToken == null)
-                return new AuthenticationResponse { ErrorMessage = new[] { "Invalid token" } };
+                return new AuthenticationResponse { Errors = new[] { "Invalid token" } };
 
             //token expire time
             var expiryDateUnix = long.Parse(validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
@@ -71,22 +76,22 @@ namespace YAPI.Services
                 .AddSeconds(expiryDateUnix);
 
             if (expiryDateTimeUtc > DateTime.UtcNow)
-                return new AuthenticationResponse { ErrorMessage = new[] { "this token hasnt expired yet" } };
+                return new AuthenticationResponse { Errors = new[] { "this token hasnt expired yet" } };
 
             var jti = validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
 
             var storedRefreshToken = await dataContext.RefreshTokens.SingleOrDefaultAsync(x => x.Token == refreshToken);
             if (storedRefreshToken == null)
-                return new AuthenticationResponse { ErrorMessage = new[] { "this refresh token doesnt exist" } };
+                return new AuthenticationResponse { Errors = new[] { "this refresh token doesnt exist" } };
 
             if (DateTime.UtcNow > storedRefreshToken.ExpiryDate)
-                return new AuthenticationResponse { ErrorMessage = new[] { "this refresh token has expired" } };
+                return new AuthenticationResponse { Errors = new[] { "this refresh token has expired" } };
             if (storedRefreshToken.InValidated)
-                return new AuthenticationResponse { ErrorMessage = new[] { "this refresh token has been invalidate" } };
+                return new AuthenticationResponse { Errors = new[] { "this refresh token has been invalidate" } };
             if (storedRefreshToken.Used)
-                return new AuthenticationResponse { ErrorMessage = new[] { "this refresh token has been used" } };
+                return new AuthenticationResponse { Errors = new[] { "this refresh token has been used" } };
             if (storedRefreshToken.JwtId != jti)
-                return new AuthenticationResponse { ErrorMessage = new[] { "this refresh doesnt match this JWT" } };
+                return new AuthenticationResponse { Errors = new[] { "this refresh doesnt match this JWT" } };
 
             storedRefreshToken.Used = true;
             dataContext.RefreshTokens.Update(storedRefreshToken);
@@ -131,7 +136,7 @@ namespace YAPI.Services
         {
             var existingUser = await userManager.FindByEmailAsync(email);
             if (existingUser != null)
-                return new AuthenticationResponse { ErrorMessage = new[] { "user with this email exist" } };
+                return new AuthenticationResponse { Errors = new[] { "user with this email exist" } };
 
             var newUserId = Guid.NewGuid();
             var newUser = new AppUser
@@ -143,7 +148,7 @@ namespace YAPI.Services
 
             var createdUser = await userManager.CreateAsync(newUser, password);//gonaa hash this pass mofo
             if (!createdUser.Succeeded)
-                return new AuthenticationResponse { ErrorMessage = createdUser.Errors.Select(x => x.Description) };
+                return new AuthenticationResponse { Errors = createdUser.Errors.Select(x => x.Description) };
 
             //added claim for policy authorization
             //await userManager.AddClaimAsync(newUser, new Claim(type: "tags.view", "true"));
@@ -216,9 +221,52 @@ namespace YAPI.Services
                 Token = tokenHandler.WriteToken(token),
                 RefreshToken = refreshToken.Token,
                 Success = true,
-                ErrorMessage = null
+                Errors = null
 
             };
+        }
+
+        public async Task<AuthenticationResponse> LoginWithFacebookAsync(string facebookAccessToken)
+        {
+            //request to facebook validate api
+            var validatedToken = await facebookAuthService.VlidateAccessTokenAsync(facebookAccessToken);
+
+            if (!validatedToken.Data.IsValid)
+                new AuthenticationResponse
+                {
+                    Errors = new[] { "Invalid facebook token" }
+                };
+            //get useriformations from facebook kardeş
+            var userInfo = await facebookAuthService.GetUserInfoAsync(facebookAccessToken);
+            if (userInfo == null)
+                new AuthenticationResponse
+                {
+                    Errors = new[] { "Something went wrong try a few seconds later..." }
+                };
+
+            var user = await userManager.FindByEmailAsync(userInfo.Email);
+            // user not exist register it mofo
+            if (user == null)
+            {
+                user = new AppUser
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Email = userInfo.Email,
+                    UserName = userInfo.Email
+                };
+
+                //creating without password user have to through facebook
+                var createdResult = await userManager.CreateAsync(user);
+                if (!createdResult.Succeeded)
+                {
+                    new AuthenticationResponse
+                    {
+                        Errors = new[] { "Something went wrong try a few seconds later..." }
+                    };
+                }
+
+            }
+            return await GetAuthenticationResultAsync(user);
         }
     }
 }

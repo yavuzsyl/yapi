@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Yapi.Contracts;
+using Yapi.Contracts.External.Facebook;
 using Yapi.Contracts.V1;
 using Yapi.Contracts.V1.Requests;
 using Yapi.Contracts.V1.Responses;
@@ -28,7 +29,7 @@ namespace YAPI.Controllers.V1
         public async Task<IActionResult> Register([FromBody]RegistrationRequest request)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new AuthenticationResponse() { ErrorMessage = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
+                return BadRequest(new AuthenticationResponse() { Errors = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
 
             var registrationResponse = await identityService.RegisterAsync(request.Email, request.Password);
             if (!registrationResponse.Success)
@@ -41,7 +42,7 @@ namespace YAPI.Controllers.V1
         public async Task<IActionResult> Login([FromBody]LoginRequest request)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new AuthenticationResponse() { ErrorMessage = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
+                return BadRequest(new AuthenticationResponse() { Errors = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
 
             var loginResponse = await identityService.LoginAsync(request.Email, request.Password);
             if (!loginResponse.Success)
@@ -63,6 +64,20 @@ namespace YAPI.Controllers.V1
                 return BadRequest(refreshResponse);
 
             return Ok(refreshResponse);
+        }
+
+
+        [HttpPost(ApiRoutes.Identity.FaceAuth)]
+        public async Task<IActionResult> Login([FromBody]UserFacebookAuthRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new AuthenticationResponse() { Errors = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
+
+            var loginResponse = await identityService.LoginWithFacebookAsync(request.AccessToken);
+            if (!loginResponse.Success)
+                return BadRequest(loginResponse);
+
+            return Ok(loginResponse);
         }
     }
 }
