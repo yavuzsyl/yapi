@@ -39,14 +39,14 @@ namespace Yapi.Sdk.Sample
                 Tags = new[] { "sdk" }
             });
 
-            var retrievedPost = await tweetbookApi.GetAsync(createdPost.Content.Id);
+            var retrievedPost = await tweetbookApi.GetAsync(createdPost.Content.Data.Id);
 
-            var updatedPost = await tweetbookApi.UpdateAsync(createdPost.Content.Id, new UpdatePostRequest
+            var updatedPost = await tweetbookApi.UpdateAsync(createdPost.Content.Data.Id, new UpdatePostRequest
             {
                 Name = "This is updated by the SDK"
             });
 
-            var deletePost = await tweetbookApi.DeleteAsync(createdPost.Content.Id);
+            var deletePost = await tweetbookApi.DeleteAsync(createdPost.Content.Data.Id);
         }
     }
     

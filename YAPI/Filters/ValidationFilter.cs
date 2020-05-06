@@ -8,6 +8,7 @@ using Yapi.Contracts.V1.Responses;
 
 namespace YAPI.Filters
 {
+    //mw her requestte action önce model validasyonu yapar , servislere eklenmesi gerekir
     public class ValidationFilter : IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

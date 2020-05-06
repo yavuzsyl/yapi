@@ -146,7 +146,7 @@ namespace YAPI.Services
                 UserName = email
             };
 
-            var createdUser = await userManager.CreateAsync(newUser, password);//gonaa hash this pass mofo
+            var createdUser = await userManager.CreateAsync(newUser, password);//gonna hash this pass mofo
             if (!createdUser.Succeeded)
                 return new AuthenticationResponse { Errors = createdUser.Errors.Select(x => x.Description) };
 
@@ -176,8 +176,10 @@ namespace YAPI.Services
             //var userClaims = await userManager.GetClaimsAsync(user);
             //ve jwt payloadu içine bu claimler eklenir authorization için 
             //claims.AddRange(userClaims);
+            //claim bazlı authentication
             #endregion
 
+            #region role bazlı authentication roller payloada eklenir
             var userRoles = await userManager.GetRolesAsync(user);
             foreach (var userRole in userRoles)
             {
@@ -194,6 +196,7 @@ namespace YAPI.Services
                     claims.Add(roleClaim);
                 }
             }
+            #endregion
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

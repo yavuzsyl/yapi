@@ -24,8 +24,7 @@ namespace YAPI.Services
 
         public async Task<FacbookUserInfoResult> GetUserInfoAsync(string accessToken)
         {
-            var formattedUrl =
-                 string.Format(UserInfoUrl, accessToken);
+            var formattedUrl = string.Format(UserInfoUrl, accessToken);
 
             var result = await httpClientFactory.CreateClient().GetAsync(formattedUrl);
             result.EnsureSuccessStatusCode();
@@ -46,13 +45,13 @@ namespace YAPI.Services
                 var responseAsString = await result.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<FacbookTokenValidationResult>(responseAsString);
             }
-            catch (Exception )
+            catch (Exception)
             {
                 return new FacbookTokenValidationResult();
             }
 
 
-            
+
 
         }
     }

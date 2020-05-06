@@ -13,7 +13,7 @@ namespace YAPI.Services
     public class UriService : IUriService
     {
         private readonly string _baseUri;
-        public UriService(string baseUri)
+        public UriService(string baseUri)//mvc installerdan requestten gelen bilgilerden baseuri gelecek 
         {
             _baseUri = baseUri;
         }

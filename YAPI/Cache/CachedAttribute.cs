@@ -46,6 +46,7 @@ namespace YAPI.Cache
                 return;
             }
 
+            //execute edilen actiondan dönen result cachelenir
             var executedContext = await next();
             //get value cache the response if not cached before
             if (executedContext.Result is OkObjectResult okObjectResult)

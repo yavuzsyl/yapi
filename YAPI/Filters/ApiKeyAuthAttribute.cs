@@ -21,8 +21,10 @@ namespace YAPI.Filters
                 return;
             }
 
+            //requeste ait servisler container içinden çekilip kullanılabilir inject edilmeden
             var configuration = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
             var apiKey = configuration.GetValue<string>(key:"ApiKey");
+            //configden apikey çekip kontrol edilir
 
             if (!potentialApiKey.Equals(apiKey))
             {

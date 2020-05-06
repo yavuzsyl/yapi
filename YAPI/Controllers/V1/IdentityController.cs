@@ -25,11 +25,12 @@ namespace YAPI.Controllers.V1
         }
 
         [HttpPost(ApiRoutes.Identity.Register)]
-        [ApiKeyAuth]
+        [ApiKeyAuth]//herkeşler register olamaz only those who got the apikeys are allowed
         public async Task<IActionResult> Register([FromBody]RegistrationRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new AuthenticationResponse() { Errors = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
+            //buna gerek yok ValidationFilter.cs ile model state kontrolü mw seviyesinde yapılıyor
+            //if (!ModelState.IsValid)
+            //    return BadRequest(new AuthenticationResponse() { Errors = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
 
             var registrationResponse = await identityService.RegisterAsync(request.Email, request.Password);
             if (!registrationResponse.Success)
@@ -70,9 +71,7 @@ namespace YAPI.Controllers.V1
         [HttpPost(ApiRoutes.Identity.FaceAuth)]
         public async Task<IActionResult> Login([FromBody]UserFacebookAuthRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new AuthenticationResponse() { Errors = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage)) });
-
+            //ModelState ValidationFilter
             var loginResponse = await identityService.LoginWithFacebookAsync(request.AccessToken);
             if (!loginResponse.Success)
                 return BadRequest(loginResponse);
