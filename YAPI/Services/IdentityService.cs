@@ -101,6 +101,7 @@ namespace YAPI.Services
             return await GetAuthenticationResultAsync(user);
 
         }
+        //token generate edeck refreshtoken guid olarakauto generate olacak db ye atılacak refreshtokenın jwtId si tokenın payloadundaki jti olacak , yeni token almaya geldiğinde refresh token ile token valid mi ona bakılacak daha sonra refresh token db de var mı diğer kontroller ve refresh tokenın jwtid tokeninki ile aynı mı aynı ise ok yeni token dönecek yeni refresh token ile
         /// <summary>
         /// validates given token is valid
         /// </summary>

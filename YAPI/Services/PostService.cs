@@ -31,6 +31,7 @@ namespace YAPI.Services
 
         public async Task<Post> GetPostByIdAsync(Guid id)
         {
+            //var post = dataContext.Posts.FromSqlRaw($"SELECT *FROM Posts where Id={id}");
             return await dataContext
                 .Posts
                 .Include(x => x.Tags)
@@ -39,7 +40,9 @@ namespace YAPI.Services
 
         public async Task<List<Post>> GetPostsAsync(GetAllPostsFilter filter, PaginationFilter paginationFilter)
         {
-            var queryable = dataContext.Posts.AsQueryable();
+            //var entity = dataContext.Model.FindEntityType(typeof(Post));
+
+            var queryable = dataContext.Posts.AsNoTracking().AsQueryable();
             if (paginationFilter != null)
             {
                 queryable = AddFiltersOnQuery(filter, queryable);
@@ -47,7 +50,7 @@ namespace YAPI.Services
                 return await queryable.Include(x => x.Tags).Skip(skip).ToListAsync();
 
             }
-            return await dataContext.Posts.Include(x => x.Tags).ToListAsync();
+            return await dataContext.Posts.Include(x=> x.AppUser).Include(x => x.Tags).ToListAsync();
         }
 
         private IQueryable<Post> AddFiltersOnQuery(GetAllPostsFilter filter, IQueryable<Post> queryable)
@@ -66,7 +69,16 @@ namespace YAPI.Services
                 return false;
 
             post.Name = postToUpdate.Name;
-            dataContext.Posts.Update(post);
+            //update edilmese bile context track ettiği için güncellenidr
+            //dataContext.Posts.Update(post);
+
+            //var effectedRows = dataContext.Database.ExecuteSqlRaw("UPDATE Posts " +
+            //     "SET Name={0}," +
+            //     "WHERE Id={1}", postToUpdate.Name, postId);
+            //dataContext.Entry(post).Reload();//to complete execute sqlRaw methods process
+
+            var isNameModified = dataContext.Entry(post).Property(nameof(post.Name)).IsModified;
+
             var isUpdated = await dataContext.SaveChangesAsync() > 0;
             return isUpdated;
         }

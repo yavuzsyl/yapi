@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -29,7 +30,7 @@ namespace YAPI.IntegrationTest
                     builder.ConfigureServices(services =>
                     {
                         services.RemoveAll(typeof(DataContext));
-                        services.AddDbContext<DataContext>(options =>
+                        services.AddDbContextPool<DataContext>(options =>
                         {
                             options.UseInMemoryDatabase("yapiIntegrationTestDB");
                         });
@@ -59,6 +60,8 @@ namespace YAPI.IntegrationTest
         protected async Task<PostResponse> CreatePostAsync(CreatePostRequest createPostRequest)
         {
             var response = await testClient.PostAsJsonAsync(ApiRoutes.Posts.Create, createPostRequest);
+            var asd = await response.Content.ReadAsStringAsync();
+            var des = JsonConvert.DeserializeObject<Response<PostResponse>>(asd).Data;
             return (await response.Content.ReadAsAsync<Response<PostResponse>>()).Data;
         }
 

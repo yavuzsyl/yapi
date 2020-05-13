@@ -16,7 +16,7 @@ namespace YAPI.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<DataContext>(options =>
+            services.AddDbContextPool<DataContext>(options =>
              options.UseSqlServer(
                  configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<AppUser>()
