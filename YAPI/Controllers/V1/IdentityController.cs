@@ -25,7 +25,7 @@ namespace YAPI.Controllers.V1
         }
 
         [HttpPost(ApiRoutes.Identity.Register)]
-        [ApiKeyAuth]//herkeşler register olamaz only those who got the apikeys are allowed
+        // [ApiKeyAuth]//herkeşler register olamaz only those who got the apikeys are allowed
         public async Task<IActionResult> Register([FromBody]RegistrationRequest request)
         {
             //buna gerek yok ValidationFilter.cs ile model state kontrolü mw seviyesinde yapılıyor
