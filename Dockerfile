@@ -9,6 +9,7 @@ COPY ./YAPI/*.csproj ./YAPI/
 COPY *.sln .
 RUN dotnet restore
 COPY . .
+RUN dotnet test ./YAPI.IntegrationTest/*.csproj
 RUN dotnet publish ./YAPI/*.csproj -o /publish/
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app

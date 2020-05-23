@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yapi.Contracts", "Yapi.Cont
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yapi.Sdk.Sample", "Yapi.Sdk.Sample\Yapi.Sdk.Sample.csproj", "{FBA96B85-644D-4FB0-935B-E3B1FD966219}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yapi.Web", "Yapi.Web\Yapi.Web.csproj", "{221B1794-BB06-4CC1-988B-535885B1B30D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yapi.Web", "Yapi.Web\Yapi.Web.csproj", "{221B1794-BB06-4CC1-988B-535885B1B30D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
