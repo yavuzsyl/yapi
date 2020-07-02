@@ -21,6 +21,11 @@ namespace Yapi.Web.Controllers
         public IActionResult Index()
         {
             return View();
+        }   
+        [HttpPost]
+        public IActionResult Index(Temperatures model)
+        {
+            return View();
         }
 
         public IActionResult Privacy()
