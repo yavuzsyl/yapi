@@ -35,18 +35,6 @@ namespace YAPI.Installers
 
             services.AddScoped<IIdentityService, IdentityService>();
 
-            #region CORS
-            services.AddCors(c =>
-            {
-                c.AddDefaultPolicy(builder =>
-                {
-                    builder.WithOrigins("http://localhost:5000")
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-                });
-            }
-            );
-            #endregion
 
             #region token validation parameters
             var tokenValidationParameters = new TokenValidationParameters
@@ -86,6 +74,11 @@ namespace YAPI.Installers
                       //policy.RequireRole("Poster", "Admin");
                   });
             });
+
+
+
+
+
             services.AddSingleton<IAuthorizationHandler, WorksForCompanyHandler>();
 
             //policy combintaion of the rules accessing something in the system

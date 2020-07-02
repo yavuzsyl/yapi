@@ -2,16 +2,14 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Face</h1>
-    <div id="responsef">
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
 
+        <fb:login-button scope="public_profile,email"
+                         onlogin="checkLoginState();">
+        </fb:login-button>
+        <div id="authStatus">   </div>
     </div>
-    <fb:login-button scope="public_profile,email"
-                     onlogin="checkLoginState();">
-    </fb:login-button>
-    <div id="authStatus">   </div>
-</div>
 
 @section Scripts{
 
@@ -42,37 +40,7 @@
         function checkLoginState() {
             FB.getLoginStatus(function (response) {
                 //statusChangeCallback(response);
-                //$("#authStatus").html("<code>" + JSON.stringify(response, null, 2) + "</code>");
-                let url = "https://localhost:5001/api/v1/identity/auth/face";
-                let table = `<table class="table border-stripped"><tr><th>Yapi token</th><th>Yapi refresh token</th></tr>`;
-
-                var model = {
-                    "AccessToken": response.authResponse.accessToken
-                };
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    async: false,
-                    crossDomain: true,
-                    contentType: "application/json",
-                    dataType: "json",
-                    data: JSON.stringify(model),
-                    success: function (data) {
-                        console.table(data);
-                        localStorage.setItem("token", data.token);
-                        localStorage.setItem("refreshtoken", data.refreshToken);
-                        table += `<tr><td>${data.token.substr(1,5)}...</td><td>${data.refreshToken.substr(1,5)}...</td></tr>`;
-
-                        $("#responsef").html(table);
-
-                    },
-                    error: function (error) {
-                        console.log(error);
-                        $("#loginDiv").show();
-                        $("#userDiv").hide();
-                    }
-                });
-
+                $("#authStatus").html("<code>" + JSON.stringify(response, null, 2) + "</code>");
             });
         }//next send response controller then request to api
     </script>
